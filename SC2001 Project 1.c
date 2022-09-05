@@ -19,6 +19,31 @@ int* gen_input_data(int count) {
 	}
 }
 
+void InsertionSort(int* arr_start, int n) {
+	for (int i = 1; i < n; i++) {
+		for(int j=i; j>0; j--) {
+			if(arr_start[j] < arr_start[j-1])
+				swap(arr_start[j],arr_start[j-1]);
+			else break;
+		}
+	}
+}
+
+void mergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorithm
+        if (last - first <= 0) {
+            return;
+        } else if (last - first > S) {
+            int mid = (first + last) / 2;
+            mergeInsert(first, mid, S);
+            mergeInsert(mid + 1, last, S);
+            merge(first, last);
+        } else if (last-first <= S) {
+            insertionSort(first, last);
+        }
+    }
+
+
+
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
