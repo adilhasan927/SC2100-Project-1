@@ -42,6 +42,8 @@ int* gen_input_data(int count);
 
 void MergeInsert(int first, int last, int S, int* arr_start);
 
+void MergeSort(int first, int last, int unused, int* arr_start);
+
 int test_is_sorted(int* array, int count);
 
 int main()
@@ -49,7 +51,7 @@ int main()
 	srand(time(NULL));   // Initialization, should only be called once
 
 	TIMING_INFO timing_info;
-	int success = test_alg_on_rand(10, &MergeInsert, 5, &timing_info);
+	int success = test_alg_on_rand(10, &MergeSort, 5, &timing_info);
 
 	printf("test success? (0|1): %d", success);
 }
@@ -59,18 +61,6 @@ void swap(int* arr, int a, int b)
 	int temp = arr[b];
 	arr[b] = arr[a];
 	arr[a] = temp;
-}
-
-void InsertionSort(int start_idx, int end_idx, int unused, int* arr) {
-	int* arr_start = &(arr[start_idx]);
-	int n = (end_idx - start_idx) + 1;
-	for (int i = 1; i < n; i++) {
-		for (int j = i; j > 0; j--) {
-			if (cmp_lt(arr_start[j], arr_start[j - 1]))
-				swap(arr_start, j, j - 1);
-			else break;
-		}
-	}
 }
 
 void merge(int start, int end, int* arr_start) {
@@ -116,6 +106,28 @@ void merge(int start, int end, int* arr_start) {
 			arr_start[first_bucket++] = tmp;
 		}
 	}
+}
+
+void InsertionSort(int start_idx, int end_idx, int unused, int* arr) {
+	int* arr_start = &(arr[start_idx]);
+	int n = (end_idx - start_idx) + 1;
+	for (int i = 1; i < n; i++) {
+		for (int j = i; j > 0; j--) {
+			if (cmp_lt(arr_start[j], arr_start[j - 1]))
+				swap(arr_start, j, j - 1);
+			else break;
+		}
+	}
+}
+
+void MergeSort(int first, int last, int unused, int* arr_start) { // Hybrid Algorithm
+	if (last - first <= 0) {
+		return;
+	}
+	int mid = (first + last) / 2;
+	MergeInsert(first, mid, unused, arr_start);
+	MergeInsert(mid + 1, last, unused, arr_start);
+	merge(first, last, arr_start);
 }
 
 void MergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorithm
