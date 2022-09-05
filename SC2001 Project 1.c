@@ -34,9 +34,9 @@ int cmp_gte(int a, int b) {
 	return a >= b;
 }
 
-void InsertionSort(int* arr_start, int n);
+void InsertionSort(int start_idx, int end_idx, int unused, int* arr);
 
-int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info);
+int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info);
 
 int* gen_input_data(int count);
 
