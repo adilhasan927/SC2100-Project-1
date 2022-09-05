@@ -59,6 +59,19 @@ void swap(int* arr, int a, int b)
 	arr[a] = temp;
 }
 
+void mergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorithm
+        if (last - first <= 0) {
+            return;
+        } else if (last - first > S) {
+            int mid = (first + last) / 2;
+            mergeInsert(first, mid, S, arr_start);
+            mergeInsert(mid + 1, last, S, arr_start);
+            merge(first, last);
+        } else if (last-first <= S) {
+            insertionSort(first, last);
+        }
+}
+
 void InsertionSort(int* arr_start, int n) {
 	for (int i = 1; i < n; i++) {
 		for (int j = i; j > 0; j--) {
