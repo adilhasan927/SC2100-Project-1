@@ -46,7 +46,7 @@ typedef struct timing_info {
 	return 1;
 };
 
-int test_is_sorted(array, count) {
+int test_is_sorted(int* array, int count) {
 	for (int i = 0; i < count-1; i++)
 	{
 		if (array[i + 1] < array[i])
