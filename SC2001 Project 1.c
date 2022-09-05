@@ -18,6 +18,8 @@ void mergeInsert(int first, int last, int S, int* arr_start);
 
 void InsertionSort(int* arr_start, int n);
 
+void mergeSort(int first, int last, int S, int* arr_start) 
+
 int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info);
 
 int* gen_input_data(int count);
@@ -84,7 +86,7 @@ void InsertionSort(int* arr_start, int n) {
 	}
 }
 
-void mergeSort(int first, int last, int S, int* arr_start) { // Hybrid Algorithm
+void mergeSort(int first, int last, int S, int* arr_start) { // Original mergeSort
         
         int mid = (first + last) / 2;
         
