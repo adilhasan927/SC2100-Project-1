@@ -56,11 +56,13 @@ int main()
 	if (!success)
 	{
 		printf("Test failed.\n");
+		exit(1);
 	}
 	else
 	{
 		printf("algorithm,thresh_if_hybrid,arr_size,time,comparisons\n");
 		printf("hybrid,10,1000,%f,%d\n", timing_info.cpu_time, timing_info.cmp_cnt);
+		exit(0);
 	}
 }
 
@@ -128,7 +130,7 @@ void InsertionSort(int start_idx, int end_idx, int unused, int* arr) {
 	}
 }
 
-void MergeSort(int first, int last, int unused, int* arr_start) { // Hybrid Algorithm
+void MergeSort(int first, int last, int unused, int* arr_start) { // Non-Hybrid Algorithm
 	if (last - first <= 0) {
 		return;
 	}
@@ -204,8 +206,6 @@ int* gen_input_data(int count) {
 
 	return array;
 }
-
-
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
