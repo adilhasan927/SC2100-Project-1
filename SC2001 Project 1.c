@@ -2,10 +2,21 @@
 //
 
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
 int main()
 {
+	srand(time(NULL));   // Initialization, should only be called once.
 	printf("Hello world!");
+}
+
+int* gen_input_data(int count) {
+	int* array = malloc(sizeof(int) * count);
+	for (int i = 0; i < count; i++)
+	{
+		array[i] = rand();
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
