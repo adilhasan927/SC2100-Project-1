@@ -1,4 +1,4 @@
-// SC2001 Project 1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// SC2001 Project 1.c : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include <stdio.h>
