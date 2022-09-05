@@ -7,21 +7,69 @@
 
 int CMP_CNT;
 
-int main()
-{
-	srand(time(NULL));   // Initialization, should only be called once.
-	printf("Hello world!");
-
-}
-
-typedef void *(SORT_FN_PTR) (int, int, int*);
+typedef void* (SORT_FN_PTR)(int, int, int*);
 
 typedef struct timing_info {
 	double cpu_time;
 	int cmp_cnt;
 } TIMING_INFO;
 
- test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info) {
+void InsertionSort(int* arr_start, int n);
+
+int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info);
+
+int* gen_input_data(int count);
+
+int test_is_sorted(int* array, int count);
+
+int main()
+{
+	srand(time(NULL));   // Initialization, should only be called once
+
+	TIMING_INFO timing_info;
+	int success = test_alg_on_rand(10, &InsertionSort, &timing_info);
+
+	printf("test success? (0|1): %d", success);
+}
+
+int cmp_lt(int a, int b) {
+	CMP_CNT++;
+	return a < b;
+}
+
+int cmp_gt(int a, int b) {
+	CMP_CNT++;
+	return a > b;
+}
+
+int cmp_lte(int a, int b) {
+	CMP_CNT++;
+	return a <= b;
+}
+
+int cmp_gte(int a, int b) {
+	CMP_CNT++;
+	return a >= b;
+}
+
+void swap(int* arr, int a, int b)
+{
+	int temp = arr[b];
+	arr[b] = arr[a];
+	arr[a] = temp;
+}
+
+void InsertionSort(int* arr_start, int n) {
+	for (int i = 1; i < n; i++) {
+		for (int j = i; j > 0; j--) {
+			if (cmp_lt(arr_start[j], arr_start[j - 1]))
+				swap(arr_start, j, j - 1);
+			else break;
+		}
+	}
+}
+
+int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info) {
 	CMP_CNT = 0;
 
 	clock_t start, end;
@@ -58,11 +106,19 @@ int test_is_sorted(int* array, int count) {
 }
 
 int* gen_input_data(int count) {
-	int* array = malloc(sizeof(int) * count);
+	int* array = (int*)malloc(sizeof(int) * count);
+
+	if (array == NULL)
+	{
+		exit(1);
+	}
+
 	for (int i = 0; i < count; i++)
 	{
 		array[i] = rand();
 	}
+
+	return array;
 }
 
 
