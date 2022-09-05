@@ -14,6 +14,8 @@ typedef struct timing_info {
 	int cmp_cnt;
 } TIMING_INFO;
 
+void mergeInsert(int first, int last, int S, int* arr_start);
+
 void InsertionSort(int* arr_start, int n);
 
 int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info);
