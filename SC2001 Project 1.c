@@ -5,10 +5,56 @@
 #include <time.h>
 #include <stdlib.h>
 
+int CMP_CNT;
+
 int main()
 {
 	srand(time(NULL));   // Initialization, should only be called once.
 	printf("Hello world!");
+
+}
+
+typedef void *(SORT_FN_PTR) (int, int, int*);
+
+typedef struct timing_info {
+	double cpu_time;
+	int cmp_cnt;
+} TIMING_INFO;
+
+ test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, TIMING_INFO* timing_info) {
+	CMP_CNT = 0;
+
+	clock_t start, end;
+	double cpu_time_used;
+
+	start = clock();
+
+	int array = gen_input_data(count);
+
+	fn_ptr(0, count - 1, array);
+
+	if (!test_is_sorted(array, count)) {
+		return 0;
+	};
+
+	end = clock();
+	cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+	timing_info->cpu_time = cpu_time_used;
+	timing_info->cmp_cnt = CMP_CNT;
+	
+	return 1;
+};
+
+int test_is_sorted(array, count) {
+	for (int i = 0; i < count-1; i++)
+	{
+		if (array[i + 1] < array[i])
+		{
+			return 0;
+		}
+	}
+	return 1;
 }
 
 int* gen_input_data(int count) {
@@ -18,6 +64,8 @@ int* gen_input_data(int count) {
 		array[i] = rand();
 	}
 }
+
+
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
