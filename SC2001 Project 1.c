@@ -51,9 +51,17 @@ int main()
 	srand(time(NULL));   // Initialization, should only be called once
 
 	TIMING_INFO timing_info;
-	int success = test_alg_on_rand(10, &MergeSort, 5, &timing_info);
+	int success = test_alg_on_rand(1000, &MergeInsert, 10, &timing_info);
 
-	printf("test success? (0|1): %d", success);
+	if (!success)
+	{
+		printf("Test failed.\n");
+	}
+	else
+	{
+		printf("algorithm,thresh_if_hybrid,arr_size,time,comparisons\n");
+		printf("hybrid,10,1000,%f,%d\n", timing_info.cpu_time, timing_info.cmp_cnt);
+	}
 }
 
 void swap(int* arr, int a, int b)
