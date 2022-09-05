@@ -7,7 +7,7 @@
 
 int CMP_CNT;
 
-typedef void* (SORT_FN_PTR)(int, int, int, int*);
+typedef void (SORT_FN_PTR)(int, int, int, int*);
 
 typedef struct timing_info {
 	double cpu_time;
