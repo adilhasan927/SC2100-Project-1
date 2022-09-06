@@ -102,7 +102,7 @@ exit_loop1:
 	//Fixed threshold; Increasing size of Array.
 	//Change index variable to create increasing array size, and update threshold size "s".
 	s = 20;
-	for (multiply = 1; multiply <= 100'000; multiply *= 10) {
+	for (multiply = 1; multiply <= 10'000; multiply *= 10) {
 		for (step = 1; step <= 9; step++)
 		{
 			n = step * multiply;
@@ -134,7 +134,7 @@ exit_loop2:
 
 	//Fixed threshold; Increasing size of Array.
 	//Change index variable to create increasing array size, and update threshold size "s".
-	for (multiply = 1; multiply <= 100'000; multiply *= 10) {
+	for (multiply = 1; multiply <= 10'000; multiply *= 10) {
 		for (step = 1; step <= 9; step++)
 		{
 			n = step * multiply;
