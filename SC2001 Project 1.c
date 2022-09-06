@@ -47,7 +47,14 @@ void MergeSort(int first, int last, int unused, int* arr_start);
 
 int test_is_sorted(int* array, int count);
 
-int main()
+int main() {
+	for (int i = 0; i < 6; i++)
+	{
+		inner_main();
+	}
+}
+
+int inner_main()
 {
 	srand(time(NULL));   // Initialization, should only be called once
 
@@ -106,7 +113,7 @@ exit_loop1:
 		for (step = 1; step <= 9; step++)
 		{
 			n = step * multiply;
-			if (n > 1'000'000)
+			if (n > 100'000)
 			{
 				goto exit_loop2;
 			}
@@ -134,23 +141,24 @@ exit_loop2:
 
 	//Fixed threshold; Increasing size of Array.
 	//Change index variable to create increasing array size, and update threshold size "s".
+	s = 0;
 	for (multiply = 1; multiply <= 10'000; multiply *= 10) {
 		for (step = 1; step <= 9; step++)
 		{
 			n = step * multiply;
-			if (n > 1'000'000)
+			if (n > 100'000)
 			{
 				goto exit_loop3;
 			}
 
-			int success = test_alg_on_rand(n, &MergeSort, s, &timing_info);
+			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
 
 			if (!success) {
 				printf("Test failed.\n");
 				exit(1);
 			}
 			else {
-				printf("Algorithm: MergeSort, Threshold: 0, Arr_Size: %d, Time: %f, Comparisons: %d\n",
+				printf("Algorithm: MergeSort, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
 					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
 				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
 					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
