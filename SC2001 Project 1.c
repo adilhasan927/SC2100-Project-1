@@ -36,7 +36,8 @@ int cmp_gte(int a, int b) {
 
 void InsertionSort(int start_idx, int end_idx, int unused, int* arr);
 
-int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info);
+int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr,
+	int size_for_mergeinsert, TIMING_INFO* timing_info);
 
 int* gen_input_data(int count);
 
@@ -61,7 +62,8 @@ int main()
 	fpt = fopen("Hybrid10Threshold.csv","w+");
 	fprintf(fpt,"Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
 	
-	//Decreasing Value of S; Fixed Size of Array. Change index variable to create increasing array size, and update threshold size "s".
+	//Decreasing Value of S; Fixed Size of Array.
+	//Change index variable to create increasing array size, and update threshold size "s".
 	for(s = 200; s>=1; s--) {
         int success = test_alg_on_rand(n,&MergeInsert,s,&timing_info);
 
@@ -70,8 +72,10 @@ int main()
             exit(1);
         }
         else{
-            printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",s,n,timing_info.cpu_time,timing_info.cmp_cnt);
-            fprintf(fpt,"Hybrid,%d,%d,%f,%d\n",s,n,timing_info.cpu_time, timing_info.cmp_cnt);
+            printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
+				s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+            fprintf(fpt,"Hybrid,%d,%d,%f,%d\n",
+				s, n, timing_info.cpu_time, timing_info.cmp_cnt);
         }
 
 	}
