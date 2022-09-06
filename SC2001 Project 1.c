@@ -55,32 +55,110 @@ int main()
 
 	//Creating CSV file
 	int s = 0; //threshold
-	int n = 20000; //size of array
+	int n = 20'000; //size of array
 	FILE *fpt;
 	
+	errno_t errno;
+
 	//Open File
-	fpt = fopen("Hybrid10Threshold.csv","w+");
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\HybridDecreasingThreshold.csv","w+")) exit(errno);
 	fprintf(fpt,"Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
 	
 	//Decreasing Value of S; Fixed Size of Array.
 	//Change index variable to create increasing array size, and update threshold size "s".
-	for(s = 200; s>=1; s--) {
-        int success = test_alg_on_rand(n,&MergeInsert,s,&timing_info);
+	int multiply;
+	int step;
+	for (multiply = 1000; multiply >= 1; multiply /= 10) {
+		for (step = 10; step >= 1; step--) {
+			if (step == 10 & multiply != 1000)
+			{
+				goto exit_loop1_loop1;
+			}
 
-        if (!success) {
-            printf("Test failed.\n");
-            exit(1);
-        }
-        else{
-            printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
-				s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-            fprintf(fpt,"Hybrid,%d,%d,%f,%d\n",
-				s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-        }
+			s = step * multiply;
 
+			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
+
+			if (!success) {
+				printf("Test failed.\n");
+				exit(1);
+			}
+			else {
+				printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+			}
+		exit_loop1_loop1:;
+		}
 	}
+exit_loop1:
 	fclose(fpt);
 
+	//Open File
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\HybridFixedThreshold.csv", "w+")) exit(errno);
+	fprintf(fpt, "Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
+
+	//Fixed threshold; Increasing size of Array.
+	//Change index variable to create increasing array size, and update threshold size "s".
+	s = 20;
+	for (multiply = 1; multiply <= 100'000; multiply *= 10) {
+		for (step = 1; step <= 9; step++)
+		{
+			n = step * multiply;
+			if (n > 1'000'000)
+			{
+				goto exit_loop2;
+			}
+
+			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
+
+			if (!success) {
+				printf("Test failed.\n");
+				exit(1);
+			}
+			else {
+				printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+			}
+		}
+	}
+exit_loop2:
+	fclose(fpt);
+
+	//Open File
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\DesktopMergeSortFixedThreshold.csv", "w+")) exit(errno);
+	fprintf(fpt, "Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
+
+	//Fixed threshold; Increasing size of Array.
+	//Change index variable to create increasing array size, and update threshold size "s".
+	for (multiply = 1; multiply <= 100'000; multiply *= 10) {
+		for (step = 1; step <= 9; step++)
+		{
+			n = step * multiply;
+			if (n > 1'000'000)
+			{
+				goto exit_loop3;
+			}
+
+			int success = test_alg_on_rand(n, &MergeSort, s, &timing_info);
+
+			if (!success) {
+				printf("Test failed.\n");
+				exit(1);
+			}
+			else {
+				printf("Algorithm: MergeSort, Threshold: 0, Arr_Size: %d, Time: %f, Comparisons: %d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
+					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
+			}
+		}
+	}
+exit_loop3:
+	fclose(fpt);
 }
 
 void swap(int* arr, int a, int b)
