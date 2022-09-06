@@ -161,9 +161,9 @@ int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TI
 	clock_t start, end;
 	double cpu_time_used;
 
-	start = clock();
-
 	int* array = gen_input_data(count);
+
+	start = clock();
 
 	fn_ptr(0, count - 1, size_for_mergeinsert, array);
 
