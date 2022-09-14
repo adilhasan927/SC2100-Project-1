@@ -9,6 +9,8 @@ int CMP_CNT;
 
 typedef void (SORT_FN_PTR)(int, int, int, int*);
 
+int* BACKING_ARRAY = NULL;
+
 typedef struct timing_info {
 	double cpu_time;
 	int cmp_cnt;
@@ -36,7 +38,7 @@ int cmp_gte(int a, int b) {
 
 void InsertionSort(int start_idx, int end_idx, int unused, int* arr);
 
-int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr,
+int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr,
 	int size_for_mergeinsert, TIMING_INFO* timing_info);
 
 int* gen_input_data(int count);
@@ -67,106 +69,86 @@ int inner_main()
 	
 	errno_t errno;
 
+	BACKING_ARRAY = malloc(sizeof(int) * 10'000'000);
+
 	//Open File
-	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\HybridDecreasingThreshold.csv","w+")) exit(errno);
-	fprintf(fpt,"Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","w+")) exit(errno);
+
+	fseek(fpt, 0L, SEEK_END);
+
+	int sz = ftell(fpt);
+	if (sz == 0)
+		fprintf(fpt,"Algorithm,Threshold,Arr_Size,Time,Comparisons\n"); //Header of CSV rows
+
+	//Generate datasets
+	int num_datasets = 0;
+	int last_marker = 1000;
+	for (int i = 1000; i <= 10'000'000; i += last_marker)
+	{
+		if (i == last_marker * 10)
+		{
+			last_marker = i;
+		}
+		num_datasets++;
+	}
+
+	int** datasets = malloc(sizeof(int*) * num_datasets);
+	int* sizes = malloc(sizeof(int) * num_datasets);
+
+	last_marker = 1000;
+	for (int i = 1000, j = 0; i <= 10'000'000; i += last_marker, j++)
+	{
+		if (i == last_marker * 10)
+		{
+			last_marker = i;
+		}
+		datasets[j] = gen_input_data(i);
+		sizes[j] = i;
+		printf("Generating: (Dataset #: %d. Dataset size: %d)\n", j+1, i);
+	}
+
+	printf("\nRunning the hybrid algorithm on our datasets, with the\n\
+			insertion sort threshold size fixed at 32 bytes.\n\n");
+
+	for (int i = 0; i < num_datasets; i++)
+	{
+		test_alg_on_array(sizes[i], datasets[i], &MergeInsert, 32, &timing_info);
+		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
+		fprintf(fpt, "Hybrid,32,%d,%f,%d", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+	}
+
+	printf("\nRunning the hybrid algorithm on our datasets, with the\n\
+			insertion sort threshold size varying from 0-100.\n\n");
+
+	for (int i = 0; i < num_datasets; i++)
+	{
+		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
+
+		for (int j = 0; j <= 100; j++)
+		{
+			printf("\t\tRunning with: (Threshold: %d)\n", j);
+
+			test_alg_on_array(sizes[i], datasets[i], &MergeInsert, j, &timing_info);
+			fprintf(fpt, "Hybrid,%d,%d,%f,%d", sizes[i], j, timing_info.cpu_time, timing_info.cmp_cnt);
+		}
+
+		printf("\n");
+	}
+
+	printf("\nRunning the pure mergesort algorithm on our datasets, with the\n\
+			insertion sort threshold size N/A.\n\n");
+
+	for (int i = 0; i < num_datasets; i++)
+	{
+		test_alg_on_array(sizes[i], datasets[i], &MergeSort, 32, &timing_info);
+		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
+		fprintf(fpt, "Hybrid,0,%d,%f,%d", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+	}
+
+	fclose(fpt);
+
+	return;
 	
-	//Decreasing Value of S; Fixed Size of Array.
-	//Change index variable to create increasing array size, and update threshold size "s".
-	int multiply;
-	int step;
-	for (multiply = 1000; multiply >= 1; multiply /= 10) {
-		for (step = 10; step >= 1; step--) {
-			if (step == 10 & multiply != 1000)
-			{
-				goto exit_loop1_loop1;
-			}
-
-			s = step * multiply;
-
-			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
-
-			if (!success) {
-				printf("Test failed.\n");
-				exit(1);
-			}
-			else {
-				printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-			}
-		exit_loop1_loop1:;
-		}
-	}
-exit_loop1:
-	fclose(fpt);
-
-	//Open File
-	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\HybridFixedThreshold.csv", "w+")) exit(errno);
-	fprintf(fpt, "Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
-
-	//Fixed threshold; Increasing size of Array.
-	//Change index variable to create increasing array size, and update threshold size "s".
-	s = 20;
-	for (multiply = 1; multiply <= 10'000; multiply *= 10) {
-		for (step = 1; step <= 9; step++)
-		{
-			n = step * multiply;
-			if (n > 100'000)
-			{
-				goto exit_loop2;
-			}
-
-			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
-
-			if (!success) {
-				printf("Test failed.\n");
-				exit(1);
-			}
-			else {
-				printf("Algorithm: Hybrid, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-			}
-		}
-	}
-exit_loop2:
-	fclose(fpt);
-
-	//Open File
-	if (errno = fopen_s(&fpt, "C:\\Users\\Adil Hasan\\Desktop\\DesktopMergeSortFixedThreshold.csv", "w+")) exit(errno);
-	fprintf(fpt, "Algorithm, Threshold, Arr_Size,Time,Comparisons\n"); //Header of CSV rows
-
-	//Fixed threshold; Increasing size of Array.
-	//Change index variable to create increasing array size, and update threshold size "s".
-	s = 0;
-	for (multiply = 1; multiply <= 10'000; multiply *= 10) {
-		for (step = 1; step <= 9; step++)
-		{
-			n = step * multiply;
-			if (n > 100'000)
-			{
-				goto exit_loop3;
-			}
-
-			int success = test_alg_on_rand(n, &MergeInsert, s, &timing_info);
-
-			if (!success) {
-				printf("Test failed.\n");
-				exit(1);
-			}
-			else {
-				printf("Algorithm: MergeSort, Threshold: %d, Arr_Size: %d, Time: %f, Comparisons: %d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n",
-					s, n, timing_info.cpu_time, timing_info.cmp_cnt);
-			}
-		}
-	}
-exit_loop3:
-	fclose(fpt);
 }
 
 void swap(int* arr, int a, int b)
@@ -177,27 +159,58 @@ void swap(int* arr, int a, int b)
 }
 
 void merge(int start, int end, int* arr_start) {
+
 	int mid = (start + end) / 2;
 
 	int first_bucket = start;
 	int second_bucket = mid + 1;
-	
-	int i;
-	int tmp;
-	int fst_bucket_gt_snd_bucket;
+	int backing_idx = 0;
 
 	if (end - start <= 0) {
 		return;
 	}
 
 	while (first_bucket <= mid && second_bucket <= end) {
-		fst_bucket_gt_snd_bucket = cmp_gt(arr_start[first_bucket], arr_start[second_bucket]);
+		int fst_bucket_gt_snd_bucket = cmp_gt(arr_start[first_bucket], arr_start[second_bucket]);
+
+		if (fst_bucket_gt_snd_bucket) {
+			BACKING_ARRAY[backing_idx] = arr_start[second_bucket];
+			second_bucket++;
+			backing_idx++;
+		}
+
+		else if (!fst_bucket_gt_snd_bucket) {
+			BACKING_ARRAY[backing_idx] = arr_start[first_bucket];
+			first_bucket++;
+			backing_idx++;
+		}
+	}
+
+	backing_idx--;
+	for (backing_idx; backing_idx >= 0; backing_idx--)
+	{
+		arr_start[start + backing_idx] = BACKING_ARRAY[backing_idx];
+	}
+}
+/*
+void merge(int start, int end, int* arr_start) {
+	int mid = (start + end) / 2;
+
+	int first_bucket = start;
+	int second_bucket = mid + 1;
+	
+	if (end - start <= 0) {
+		return;
+	}
+
+	while (first_bucket <= mid && second_bucket <= end) {
+		int fst_bucket_gt_snd_bucket = cmp_gt(arr_start[first_bucket], arr_start[second_bucket]);
 
 		if (fst_bucket_gt_snd_bucket) {
 			//set tmp to the first element in the second bucket
-			tmp = arr_start[second_bucket++];
+			int tmp = arr_start[second_bucket++];
 
-			for (i = ++mid; i > first_bucket; i--) {
+			for (int i = ++mid; i > first_bucket; i--) {
 				arr_start[i] = arr_start[i - 1];
 			}
 			arr_start[first_bucket++] = tmp;
@@ -206,20 +219,9 @@ void merge(int start, int end, int* arr_start) {
 		else if (!fst_bucket_gt_snd_bucket) {
 			first_bucket++;
 		}
-
-		else {
-			if (first_bucket == mid && second_bucket == end) {
-				break;
-			}
-			tmp = arr_start[second_bucket++];
-			first_bucket++;
-			for (i = ++mid; i > first_bucket; i--) {
-				arr_start[i] = arr_start[i - 1];
-			}
-			arr_start[first_bucket++] = tmp;
-		}
 	}
 }
+*/
 
 void InsertionSort(int start_idx, int end_idx, int unused, int* arr) {
 	int* arr_start = &(arr[start_idx]);
@@ -258,13 +260,11 @@ void MergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorit
 	}
 }
 
-int test_alg_on_rand(int count, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info) {
+int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info) {
 	CMP_CNT = 0;
 
 	clock_t start, end;
 	double cpu_time_used;
-
-	int* array = gen_input_data(count);
 
 	start = clock();
 
@@ -304,7 +304,12 @@ int* gen_input_data(int count) {
 
 	for (int i = 0; i < count; i++)
 	{
-		array[i] = rand();
+		int randval = 0;
+		while(randval <= 0)
+		{
+			randval = rand();
+		}
+		array[i] = randval;
 	}
 
 	return array;
