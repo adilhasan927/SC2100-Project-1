@@ -124,7 +124,7 @@ int inner_main()
 	{
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
 
-		for (int j = 0; j <= 100; j++)
+		for (int j = 0; j <= 10; j++)
 		{
 			printf("\t\tRunning with: (Threshold: %d)\n", j);
 
@@ -254,8 +254,8 @@ void MergeSort(int first, int last, int unused, int* arr_start) { // Non-Hybrid 
 		return;
 	}
 	int mid = (first + last) / 2;
-	MergeInsert(first, mid, unused, arr_start);
-	MergeInsert(mid + 1, last, unused, arr_start);
+	MergeSort(first, mid, unused, arr_start);
+	MergeSort(mid + 1, last, unused, arr_start);
 	merge(first, last, arr_start);
 }
 
