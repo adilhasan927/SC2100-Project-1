@@ -124,7 +124,7 @@ int inner_main()
 	{
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
 
-		for (int j = 0; j <= 10; j++)
+		for (int j = 0; j <= 100; j++)
 		{
 			printf("\t\tRunning with: (Threshold: %d)\n", j);
 
