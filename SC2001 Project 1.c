@@ -50,7 +50,7 @@ void MergeSort(int first, int last, int unused, int* arr_start);
 int test_is_sorted(int* array, int count);
 
 int main() {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		inner_main();
 	}
@@ -72,7 +72,7 @@ int inner_main()
 	BACKING_ARRAY = malloc(sizeof(int) * 10'000'000);
 
 	//Open File
-	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","w+")) exit(errno);
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","w")) exit(errno);
 
 	fseek(fpt, 0L, SEEK_END);
 
@@ -114,7 +114,7 @@ int inner_main()
 	{
 		test_alg_on_array(sizes[i], datasets[i], &MergeInsert, 32, &timing_info);
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
-		fprintf(fpt, "Hybrid,32,%d,%f,%d", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+		fprintf(fpt, "Hybrid,32,%d,%f,%d\n", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
 	}
 
 	printf("\nRunning the hybrid algorithm on our datasets, with the\n\
@@ -129,7 +129,7 @@ int inner_main()
 			printf("\t\tRunning with: (Threshold: %d)\n", j);
 
 			test_alg_on_array(sizes[i], datasets[i], &MergeInsert, j, &timing_info);
-			fprintf(fpt, "Hybrid,%d,%d,%f,%d", sizes[i], j, timing_info.cpu_time, timing_info.cmp_cnt);
+			fprintf(fpt, "Hybrid,%d,%d,%f,%d\n", j, sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
 		}
 
 		printf("\n");
@@ -142,7 +142,7 @@ int inner_main()
 	{
 		test_alg_on_array(sizes[i], datasets[i], &MergeSort, 32, &timing_info);
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
-		fprintf(fpt, "Hybrid,0,%d,%f,%d", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+		fprintf(fpt, "MergeSort,0,%d,%f,%d\n", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
 	}
 
 	fclose(fpt);
@@ -159,7 +159,6 @@ void swap(int* arr, int a, int b)
 }
 
 void merge(int start, int end, int* arr_start) {
-
 	int mid = (start + end) / 2;
 
 	int first_bucket = start;
@@ -186,12 +185,27 @@ void merge(int start, int end, int* arr_start) {
 		}
 	}
 
+	while (first_bucket <= mid)
+	{
+		BACKING_ARRAY[backing_idx] = arr_start[first_bucket];
+		first_bucket++;
+		backing_idx++;
+	}
+
+	while (second_bucket <= mid)
+	{
+		BACKING_ARRAY[backing_idx] = arr_start[second_bucket];
+		second_bucket++;
+		backing_idx++;
+	}
+
 	backing_idx--;
 	for (backing_idx; backing_idx >= 0; backing_idx--)
 	{
 		arr_start[start + backing_idx] = BACKING_ARRAY[backing_idx];
 	}
 }
+
 /*
 void merge(int start, int end, int* arr_start) {
 	int mid = (start + end) / 2;
@@ -288,6 +302,7 @@ int test_is_sorted(int* array, int count) {
 	{
 		if (array[i + 1] < array[i])
 		{
+			exit(-1);
 			return 0;
 		}
 	}
