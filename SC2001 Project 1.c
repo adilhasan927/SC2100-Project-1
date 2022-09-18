@@ -126,7 +126,7 @@ int inner_main()
 	{
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
 
-		for (int j = 1; j <= 1024; j*= 2)
+		for (int j = 0; j <= 100; j++)
 		{
 			printf("\t\tRunning with: (Threshold: %d)\n", j);
 
@@ -277,7 +277,7 @@ void MergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorit
 }
 
 int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info) {
-	memcpy(array, TEMP_ARRAY, sizeof(int) * count);
+	memcpy(TEMP_ARRAY, array, sizeof(int) * count);
 
 	CMP_CNT = 0;
 
@@ -298,7 +298,7 @@ int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr, int size_for_me
 	timing_info->cpu_time = cpu_time_used;
 	timing_info->cmp_cnt = CMP_CNT;
 	
-	memcpy(TEMP_ARRAY, array, sizeof(int) * count);
+	memcpy(array, TEMP_ARRAY, sizeof(int) * count);
 
 	return 1;
 };
