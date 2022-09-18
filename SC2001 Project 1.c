@@ -10,6 +10,7 @@ int CMP_CNT;
 typedef void (SORT_FN_PTR)(int, int, int, int*);
 
 int* BACKING_ARRAY = NULL;
+int* TEMP_ARRAY = NULL;
 
 typedef struct timing_info {
 	double cpu_time;
@@ -70,6 +71,7 @@ int inner_main()
 	errno_t errno;
 
 	BACKING_ARRAY = malloc(sizeof(int) * 10'000'000);
+	TEMP_ARRAY = malloc(sizeof(int) * 10'000'000);
 
 	//Open File
 	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","w")) exit(errno);
@@ -124,7 +126,7 @@ int inner_main()
 	{
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
 
-		for (int j = 0; j <= 100; j++)
+		for (int j = 1; j <= 1024; j*= 2)
 		{
 			printf("\t\tRunning with: (Threshold: %d)\n", j);
 
@@ -275,6 +277,8 @@ void MergeInsert(int first, int last, int S, int* arr_start) { // Hybrid Algorit
 }
 
 int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr, int size_for_mergeinsert, TIMING_INFO* timing_info) {
+	memcpy(array, TEMP_ARRAY, sizeof(int) * count);
+
 	CMP_CNT = 0;
 
 	clock_t start, end;
@@ -294,6 +298,8 @@ int test_alg_on_array(int count, int* array, SORT_FN_PTR fn_ptr, int size_for_me
 	timing_info->cpu_time = cpu_time_used;
 	timing_info->cmp_cnt = CMP_CNT;
 	
+	memcpy(TEMP_ARRAY, array, sizeof(int) * count);
+
 	return 1;
 };
 
