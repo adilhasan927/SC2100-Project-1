@@ -74,9 +74,7 @@ int inner_main()
 	TEMP_ARRAY = malloc(sizeof(int) * 10'000'000);
 
 	//Open File
-	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","w")) exit(errno);
-
-	fseek(fpt, 0L, SEEK_END);
+	if (errno = fopen_s(&fpt, "C:\\Users\\Adil\ Hasan\\Desktop\\Data.csv","a")) exit(errno);
 
 	int sz = ftell(fpt);
 	if (sz == 0)
@@ -109,6 +107,7 @@ int inner_main()
 		printf("Generating: (Dataset #: %d. Dataset size: %d)\n", j+1, i);
 	}
 
+	/*
 	printf("\nRunning the hybrid algorithm on our datasets, with the\n\
 			insertion sort threshold size fixed at 32 bytes.\n\n");
 
@@ -118,34 +117,51 @@ int inner_main()
 		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
 		fprintf(fpt, "Hybrid,32,%d,%f,%d\n", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
 	}
+	*/
 
 	printf("\nRunning the hybrid algorithm on our datasets, with the\n\
 			insertion sort threshold size varying from 0-100.\n\n");
 
-	for (int i = 0; i < num_datasets; i++)
+	for (int k = 0; k < 10; k++)
 	{
-		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
-
-		for (int j = 0; j <= 100; j++)
+		for (int i = 0; i <= num_datasets-1; i++)
 		{
-			printf("\t\tRunning with: (Threshold: %d)\n", j);
+			printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n\n", i+1, sizes[i]);
 
-			test_alg_on_array(sizes[i], datasets[i], &MergeInsert, j, &timing_info);
-			fprintf(fpt, "Hybrid,%d,%d,%f,%d\n", j, sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+			for (int j = 4; j <= 4; j++)
+			{
+				printf("\t\tRunning with: (Threshold: %d)\n", j);
+
+				test_alg_on_array(sizes[i], datasets[i], &MergeInsert, j, &timing_info);
+				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n", j, sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+			}
+
+			for (int j = 0; j <= 0; j++)
+			{
+				printf("\t\tRunning with: (Threshold: %d)\n", j);
+
+				test_alg_on_array(sizes[i], datasets[i], &MergeInsert, j, &timing_info);
+				fprintf(fpt, "Hybrid,%d,%d,%f,%d\n", j, sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+			}
+
+			printf("\n");
 		}
-
-		printf("\n");
 	}
 
+	/*
 	printf("\nRunning the pure mergesort algorithm on our datasets, with the\n\
 			insertion sort threshold size N/A.\n\n");
 
-	for (int i = 0; i < num_datasets; i++)
+	for (int k = 0; k < 10; k++)
 	{
-		test_alg_on_array(sizes[i], datasets[i], &MergeSort, 32, &timing_info);
-		printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
-		fprintf(fpt, "MergeSort,0,%d,%f,%d\n", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+		for (int i = num_datasets - 1; i <= num_datasets - 1; i++)
+		{
+			test_alg_on_array(sizes[i], datasets[i], &MergeSort, 32, &timing_info);
+			printf("\tRunning on: (Dataset #: %d. Dataset size: %d)\n", i + 1, sizes[i]);
+			fprintf(fpt, "MergeSort,0,%d,%f,%d\n", sizes[i], timing_info.cpu_time, timing_info.cmp_cnt);
+		}
 	}
+	*/
 
 	fclose(fpt);
 
